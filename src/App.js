@@ -71,6 +71,7 @@ function App() {
         <>
           <Grid
             container
+            className="full"
             direction="column"
             alignItems="center"
             justifyContent="center"
@@ -93,6 +94,7 @@ function App() {
           {!gameState ? (
             <Grid
               container
+              className="full"
               id="start-game"
               textAlign="center"
               justifyContent="center"
