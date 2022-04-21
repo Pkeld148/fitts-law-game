@@ -7,6 +7,10 @@
   pointer-events: none;
 }
 
+/* body {
+  background-color: #282c34;
+} */
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -38,6 +42,10 @@
 
 #start-game {
   height: 100vh;
+}
+
+#title {
+  font-size: 80px;
 }
 
 #try-again:hover {

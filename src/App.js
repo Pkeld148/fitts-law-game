@@ -101,32 +101,38 @@ function App() {
               alignItems="center"
             >
               <Grid item>
-                <h1>CLICK TO PLAY THE GAME</h1>
-                <Button
-                  variant="contained"
-                  size="large"
-                  color="success"
-                  sx={{ fontSize: 50 }}
-                  onClick={() => startEasyGame()}
-                >
-                  EASY
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ margin: 5, fontSize: 20 }}
-                  onClick={() => startNormalGame()}
-                >
-                  NORMAL
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="error"
-                  sx={{ fontSize: 8 }}
-                  onClick={() => startHardGame()}
-                >
-                  HARD
-                </Button>
+                <h1 id="title">CLICKLE</h1>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    color="success"
+                    sx={{ fontSize: 50 }}
+                    onClick={() => startEasyGame()}
+                  >
+                    EASY
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    sx={{ margin: 5, fontSize: 20 }}
+                    onClick={() => startNormalGame()}
+                  >
+                    NORMAL
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="error"
+                    sx={{ fontSize: 8 }}
+                    onClick={() => startHardGame()}
+                  >
+                    HARD
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           ) : (
