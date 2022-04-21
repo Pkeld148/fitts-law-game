@@ -28,6 +28,18 @@
   color: #61dafb;
 }
 
+#boxes {
+  height: 100vh;
+}
+
+#start-game {
+  height: 100vh;
+}
+
+#try-again:hover {
+  background-color: rgb(78, 0, 78);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
