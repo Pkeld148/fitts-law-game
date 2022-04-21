@@ -44,6 +44,11 @@ function App() {
     setTimer({ ...timer, startTime: Date.now() });
   };
 
+  const resetGame = () => {
+    setGameState(null);
+    setCounter(1);
+  };
+
   const nextButton = () => {
     if (difficulty === "Easy") {
       setGameState(easyArray[counter]);
@@ -64,17 +69,23 @@ function App() {
     <>
       {counter === 10 ? (
         <>
-        <Grid container direction="column" alignItems="center" justifyContent="center">
-          <h1>GOOD JOB!</h1>
-          <h2>TIME: {timer.endTime}ms</h2>
-          <Button
-            id="try-again"
-            variant="contained"
-            size="large"
-            sx={{ backgroundColor: "purple" }}
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
           >
-            TRY AGAIN?
-          </Button>
+            <h1>GOOD JOB!</h1>
+            <h2>TIME: {timer.endTime}ms</h2>
+            <Button
+              id="try-again"
+              variant="contained"
+              size="large"
+              sx={{ backgroundColor: "purple" }}
+              onClick={() => resetGame()}
+            >
+              TRY AGAIN?
+            </Button>
           </Grid>
         </>
       ) : (
