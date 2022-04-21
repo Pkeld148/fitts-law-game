@@ -1,9 +1,7 @@
-import logo from "./logo.svg";
 import "./App.css";
 
 import { Button, Container, Grid } from "@mui/material";
 import React, { useState } from "react";
-import ClickButton from "./ClickButton";
 
 function App() {
   const [gameState, setGameState] = useState(null);
