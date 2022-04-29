@@ -1,7 +1,7 @@
 import "./App.css";
 
 import { Button, Container, Grid } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function App() {
   const [gameState, setGameState] = useState(null);
@@ -11,15 +11,84 @@ function App() {
   const [difficulty, setDifficulty] = useState("");
   const [counter, setCounter] = useState(1);
   const [timer, setTimer] = useState({ startTime: null, endTime: null });
+  const [data, setData] = useState({});
 
   const easyArray = [1, 2, 3, 6, 5, 4, 7, 8, 9];
   const normalArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const hardArray = [7, 2, 6, 1, 3, 8, 4, 9, 5];
 
+  const clickleArray = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1, 7, 9,
+  ];
+
+  const dummyGlobalData = {
+    averageTime: 14000,
+    bestTime: 9999,
+    weekAverageTime: 15000,
+    weekBestTime: 8888,
+  };
+
+  const dummyPersonalData = {
+    averageTime: 13000,
+    bestTime: 9001,
+    weekAverageTime: 14000,
+    weekBestTime: 9001,
+  };
+
+  let shuffledClickleArray = clickleArray
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+
+  //  function getData(endpoint = 'http://localhost:8081/customers', request = {}) {
+  //     let url = endpoint;
+  //     let req = Object.assign(
+  //       {
+  //         headers: {
+  //           Accept: 'application/json',
+  //           'Content-Type': 'application/json',
+  //           'Access-Control-Allow-Origin': '*',
+  //         },
+  //       },
+  //       request
+  //     );
+  //     console.log('url,req', url, req);
+  //     return fetch(url, req).then(handleResponse).catch(handleErrors);
+  //   }
+
+  let req = Object.assign(
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    },
+    {}
+  );
+
+  let response = fetch("http://localhost:8081/customers", req);
+  console.log("response: ", response);
+  if (response.ok) {
+    let json = response.json();
+    console.log(json);
+  } else {
+    console.log("U BAD");
+  }
+
   const startEasyGame = () => {
     setDifficulty("Easy");
     setGameState(1);
     setColor("success");
+    setSize(50);
+    setOpacity(100);
+    setTimer({ ...timer, startTime: Date.now() });
+  };
+
+  const startWarmup = () => {
+    setDifficulty("Easy");
+    setGameState(1);
+    setColor("error");
     setSize(50);
     setOpacity(100);
     setTimer({ ...timer, startTime: Date.now() });
@@ -51,7 +120,7 @@ function App() {
 
   const nextButton = () => {
     if (difficulty === "Easy") {
-      setGameState(easyArray[counter]);
+      setGameState(shuffledClickleArray[counter]);
       setCounter(counter + 1);
     } else if (difficulty === "Normal") {
       setGameState(normalArray[counter]);
@@ -60,14 +129,14 @@ function App() {
       setGameState(hardArray[counter]);
       setCounter(counter + 1);
     }
-    if (counter === 9) {
+    if (counter === 19) {
       setTimer({ ...timer, endTime: Date.now() - timer.startTime });
     }
   };
 
   return (
     <>
-      {counter === 10 ? (
+      {counter === 20 ? (
         <>
           <Grid
             container
@@ -88,6 +157,44 @@ function App() {
               TRY AGAIN?
             </Button>
           </Grid>
+          <Grid
+            container
+            className="stats"
+            direction="row"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Grid
+              item
+              justifyContent="center"
+              alignItems="center"
+              textAlign="center"
+              className="personal-stats"
+            >
+              <h1>PERSONAL STATS</h1>
+              <h2>Average Time(Career): {dummyPersonalData.averageTime}</h2>
+              <h2>Best Time(Career): {dummyPersonalData.bestTime}</h2>
+              <h2>
+                Average Time (Past 7 Days): {dummyPersonalData.weekAverageTime}
+              </h2>
+              <h2>Best Time(Past 7 Days): {dummyPersonalData.weekBestTime}</h2>
+            </Grid>
+            <Grid
+              item
+              justifyContent="center"
+              alignItems="center"
+              textAlign="center"
+              className="global-stats"
+            >
+              <h1>GLOBAL STATS</h1>
+              <h2>Average Time: {dummyGlobalData.averageTime}</h2>
+              <h2>Best Time: {dummyGlobalData.bestTime}</h2>
+              <h2>
+                Average Time (Past 7 Days): {dummyGlobalData.weekAverageTime}
+              </h2>
+              <h2>Best Time(Past 7 Days): {dummyGlobalData.weekBestTime}</h2>
+            </Grid>
+          </Grid>
         </>
       ) : (
         <>
@@ -107,13 +214,23 @@ function App() {
                     variant="contained"
                     size="large"
                     color="success"
-                    sx={{ fontSize: 50 }}
+                    sx={{ fontSize: 50, borderRadius: 50 }}
                     onClick={() => startEasyGame()}
                   >
-                    EASY
+                    START
                   </Button>
                 </Grid>
                 <Grid item>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={{ margin: 5, fontSize: 50, borderRadius: 50 }}
+                    onClick={() => startWarmup()}
+                  >
+                    Warmup
+                  </Button>
+                </Grid>
+                {/* <Grid item>
                   <Button
                     variant="contained"
                     sx={{ margin: 5, fontSize: 20 }}
@@ -132,7 +249,7 @@ function App() {
                   >
                     HARD
                   </Button>
-                </Grid>
+                </Grid> */}
               </Grid>
             </Grid>
           ) : (
@@ -148,7 +265,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -160,7 +277,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>
@@ -171,7 +288,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -183,7 +300,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>
@@ -194,7 +311,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -206,7 +323,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>
@@ -217,7 +334,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -229,7 +346,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>
@@ -240,7 +357,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -252,7 +369,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>
@@ -263,7 +380,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -275,7 +392,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>
@@ -286,7 +403,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -298,7 +415,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>
@@ -309,7 +426,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -321,7 +438,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>
@@ -332,7 +449,7 @@ function App() {
                   <Button
                     variant="contained"
                     color={color}
-                    sx={{ fontSize: size, opacity: opacity }}
+                    sx={{ fontSize: size, opacity: opacity, borderRadius: 50 }}
                     onClick={() => nextButton()}
                   >
                     CLICK
@@ -344,7 +461,7 @@ function App() {
                     variant="contained"
                     color={color}
                     disabled
-                    sx={{ fontSize: size, opacity: 0 }}
+                    sx={{ fontSize: size, opacity: 0, borderRadius: 50 }}
                   >
                     CLICK
                   </Button>

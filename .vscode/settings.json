@@ -1,0 +1,5 @@
+{
+  "java.project.sourcePaths": ["src/java", "src/main/java/com/test"],
+
+  "java.configuration.updateBuildConfiguration": "automatic"
+}

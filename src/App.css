@@ -32,8 +32,20 @@
   color: #61dafb;
 }
 
-.full {
+.Button {
+  border-radius: 50%;
+}
+
+/* .full {
   height: 100vh;
+} */
+
+.personal-stats {
+  width: 50%;
+}
+
+.global-stats {
+  width: 50%;
 }
 
 #boxes {
