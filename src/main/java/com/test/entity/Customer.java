@@ -9,7 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name="TESTcustomer")
+@Table(name="clickle")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,11 +20,11 @@ public class Customer {
     @Column(name = "id", nullable = false)
     Integer id;
 
-    @Column(name="name")
-    String name;
+    // @Column(name="name")
+    // String name;
 
-    @Column(name="age")
-    Integer age;
+    @Column(name="time")
+    Integer time;
 
 
 }

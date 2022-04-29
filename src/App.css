@@ -17,6 +17,14 @@
   }
 }
 
+/* #chartjs {
+  height: 22%;
+} */
+
+/* .stats {
+  height: 100%;
+} */
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -37,7 +45,7 @@
 }
 
 /* .full {
-  height: 100vh;
+  height: 100%;
 } */
 
 .personal-stats {

@@ -1,7 +1,17 @@
 import "./App.css";
+import axios from "axios";
 
 import { Button, Container, Grid } from "@mui/material";
 import React, { useState, useEffect } from "react";
+
+import { Line } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
+Chart.register(...registerables);
+
+let playerIDs = [];
+let playerTimes = [];
+let sortedPlayerTimes = [];
+let labels = [];
 
 function App() {
   const [gameState, setGameState] = useState(null);
@@ -11,7 +21,11 @@ function App() {
   const [difficulty, setDifficulty] = useState("");
   const [counter, setCounter] = useState(1);
   const [timer, setTimer] = useState({ startTime: null, endTime: null });
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    bestTime: null,
+    averageTime: null,
+    gamesPlayed: null,
+  });
 
   const easyArray = [1, 2, 3, 6, 5, 4, 7, 8, 9];
   const normalArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -35,46 +49,22 @@ function App() {
     weekBestTime: 9001,
   };
 
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: "Your Times(ms)",
+        data: playerTimes,
+        borderColor: "rgb(0, 64, 240)",
+        backgroundColor: "rgba(0, 64, 240, 0.5)",
+      },
+    ],
+  };
+
   let shuffledClickleArray = clickleArray
     .map((value) => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
-
-  //  function getData(endpoint = 'http://localhost:8081/customers', request = {}) {
-  //     let url = endpoint;
-  //     let req = Object.assign(
-  //       {
-  //         headers: {
-  //           Accept: 'application/json',
-  //           'Content-Type': 'application/json',
-  //           'Access-Control-Allow-Origin': '*',
-  //         },
-  //       },
-  //       request
-  //     );
-  //     console.log('url,req', url, req);
-  //     return fetch(url, req).then(handleResponse).catch(handleErrors);
-  //   }
-
-  let req = Object.assign(
-    {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    },
-    {}
-  );
-
-  let response = fetch("http://localhost:8081/customers", req);
-  console.log("response: ", response);
-  if (response.ok) {
-    let json = response.json();
-    console.log(json);
-  } else {
-    console.log("U BAD");
-  }
 
   const startEasyGame = () => {
     setDifficulty("Easy");
@@ -134,6 +124,56 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (timer.endTime) {
+      console.log(timer.endTime);
+
+      axios
+        .post("http://localhost:8081", {
+          time: timer.endTime,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .then((response) => {
+          axios.get("http://localhost:8081").then((res) => {
+            console.log("Getting all data after posting? ", res);
+            console.log("Array length: ", res.data.length);
+
+            for (let i = 0; i < res.data.length; i++) {
+              playerTimes.push(res.data[i].time);
+              playerIDs.push(res.data[i].id);
+            }
+            sortedPlayerTimes = [...playerTimes].sort((a, b) => a - b);
+
+            let timeSum = 0;
+            for (let i = 0; i < sortedPlayerTimes.length; i++) {
+              timeSum += sortedPlayerTimes[i];
+            }
+
+            let newAverageTime = timeSum / sortedPlayerTimes.length;
+
+            console.log("Sorted Array: ", sortedPlayerTimes);
+            console.log("Average: ", newAverageTime);
+            setData({
+              bestTime: sortedPlayerTimes[0],
+              averageTime: newAverageTime.toFixed(0),
+              gamesPlayed: sortedPlayerTimes.length,
+            });
+            labels = playerIDs;
+          });
+        });
+    }
+  }, [timer.endTime]);
+
+  useEffect(() => {
+    if (data.bestTime) {
+      console.log("Player data updated?", data);
+      console.log("Player Times Array: ", playerTimes);
+      console.log("Player IDs Array: ", playerIDs);
+    }
+  }, [data.bestTime]);
+
   return (
     <>
       {counter === 20 ? (
@@ -146,7 +186,7 @@ function App() {
             justifyContent="center"
           >
             <h1>GOOD JOB!</h1>
-            <h2>TIME: {timer.endTime}ms</h2>
+            <h2>YOUR TIME: {timer.endTime}ms</h2>
             <Button
               id="try-again"
               variant="contained"
@@ -160,7 +200,7 @@ function App() {
           <Grid
             container
             className="stats"
-            direction="row"
+            direction="column"
             alignItems="center"
             justifyContent="center"
           >
@@ -171,15 +211,12 @@ function App() {
               textAlign="center"
               className="personal-stats"
             >
-              <h1>PERSONAL STATS</h1>
-              <h2>Average Time(Career): {dummyPersonalData.averageTime}</h2>
-              <h2>Best Time(Career): {dummyPersonalData.bestTime}</h2>
-              <h2>
-                Average Time (Past 7 Days): {dummyPersonalData.weekAverageTime}
-              </h2>
-              <h2>Best Time(Past 7 Days): {dummyPersonalData.weekBestTime}</h2>
+              <h1>CAREER STATS</h1>
+              <h2>Games Played: {data.gamesPlayed}</h2>
+              <h2>Average Time: {data.averageTime}ms</h2>
+              <h2>Best Time: {data.bestTime}ms</h2>
             </Grid>
-            <Grid
+            {/* <Grid
               item
               justifyContent="center"
               alignItems="center"
@@ -193,6 +230,15 @@ function App() {
                 Average Time (Past 7 Days): {dummyGlobalData.weekAverageTime}
               </h2>
               <h2>Best Time(Past 7 Days): {dummyGlobalData.weekBestTime}</h2>
+            </Grid> */}
+
+            <Grid
+              item
+              justifyContent="center"
+              alignItems="center"
+              style={{ width: "800px" }}
+            >
+              <Line data={chartData}></Line>
             </Grid>
           </Grid>
         </>
@@ -220,7 +266,7 @@ function App() {
                     START
                   </Button>
                 </Grid>
-                <Grid item>
+                {/* <Grid item>
                   <Button
                     variant="contained"
                     color="error"
@@ -229,7 +275,7 @@ function App() {
                   >
                     Warmup
                   </Button>
-                </Grid>
+                </Grid> */}
                 {/* <Grid item>
                   <Button
                     variant="contained"

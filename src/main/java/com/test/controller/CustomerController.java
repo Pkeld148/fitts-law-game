@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 // Customer class (instructor copy)
 
 @RestController
-@RequestMapping(path = "/customers")
+@RequestMapping(path = "/")
 @CrossOrigin(origins = "http://localhost:3000")
 
 public class CustomerController {
@@ -24,10 +24,10 @@ public class CustomerController {
     }
 
     // Specific to get Mapping
-    @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable int id) {
-        return new ResponseEntity<Customer>(customerService.getCustomerById(id), HttpStatus.OK);
-    }
+    // @GetMapping("/{id}")
+    // public ResponseEntity<Customer> getCustomerById(@PathVariable int id) {
+    //     return new ResponseEntity<Customer>(customerService.getCustomerById(id), HttpStatus.OK);
+    // }
 
     // Specific to Post Mapping
     @PostMapping("")
@@ -36,16 +36,16 @@ public class CustomerController {
     }
 
     // Specific to Put Mapping
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateCustomer(@PathVariable int id, @RequestBody Customer customer) {
-        return new ResponseEntity<String>(customerService.updateCustomer(id, customer), HttpStatus.OK);
-    }
+    // @PutMapping("/{id}")
+    // public ResponseEntity<String> updateCustomer(@PathVariable int id, @RequestBody Customer customer) {
+    //     return new ResponseEntity<String>(customerService.updateCustomer(id, customer), HttpStatus.OK);
+    // }
 
     // Specific to Delete Mapping
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeCustomer(@PathVariable int id) {
-        return new ResponseEntity<String>(customerService.removeCustomer(id), HttpStatus.OK);
-    }
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<String> removeCustomer(@PathVariable int id) {
+    //     return new ResponseEntity<String>(customerService.removeCustomer(id), HttpStatus.OK);
+    // }
 
 //    // Specific to Delete Mapping
 //    @DeleteMapping("/{id}")
